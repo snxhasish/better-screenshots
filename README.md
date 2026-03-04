@@ -61,7 +61,7 @@ pip install -e .
 
 ### Install with Nix (Flake)
 
-```bash
+```nix
 # Add to your flake.nix inputs:
 inputs.better-screenshots.url = "github:snxhasish/better-screenshots";
 
@@ -75,6 +75,16 @@ outputs = { self, nixpkgs, better-screenshots, ... }: {
     ];
   };
 };
+```
+
+### Install with Nixpkgs (Official - after merged)
+
+```bash
+# Once merged into nixpkgs, install via:
+nix-env -iA nixpkgs.better-screenshots
+
+# Or in configuration.nix:
+environment.systemPackages = [ pkgs.better-screenshots ];
 ```
 
 ### Install with Nix (Non-Flake)
