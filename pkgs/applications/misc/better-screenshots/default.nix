@@ -1,17 +1,34 @@
-{ lib, python3, fetchFromGitHub, grim, slurp, wl-clipboard, click, pillow, toml, pyyaml, requests }:
+{ lib
+, buildPythonPackage
+, fetchFromGitHub
+, grim
+, slurp
+, wl-clipboard
+, makeWrapper
+, click
+, pillow
+, toml
+, pyyaml
+, requests
+, setuptools
+}:
 
-python3.pkgs.buildPythonPackage {
+buildPythonPackage {
   pname = "better-screenshots";
   version = "0.1.0";
 
   src = fetchFromGitHub {
     owner = "snxhasish";
     repo = "better-screenshots";
-    rev = "v${version}";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    rev = "2f834716edd4a80504bacdbd3ddc24c1d63a20af";
+    hash = "sha256-8iydpppaonyj+pJDdjG7tFG9hKLNjey/DZenQAyubMk=";
   };
 
   format = "pyproject";
+
+  buildInputs = [
+    setuptools
+  ];
 
   dependencies = [
     click
