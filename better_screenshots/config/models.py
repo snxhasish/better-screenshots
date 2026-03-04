@@ -17,10 +17,10 @@ class CaptureConfig:
 @dataclass
 class BackgroundGradient:
     """Gradient background settings."""
-    enabled: bool = False
-    start_color: str = "#1a1a2e"
-    end_color: str = "#16213e"
-    direction: str = "vertical"
+    enabled: bool = True
+    start_color: str = "#ff5858"
+    end_color: str = "#ffc8c8"
+    direction: str = "horizontal"
 
 
 @dataclass
@@ -35,7 +35,7 @@ class BackgroundImage:
 @dataclass
 class BackgroundConfig:
     """Background settings."""
-    default_type: str = "solid"
+    default_type: str = "gradient"
     default_color: str = "#1a1a2e"
     padding: int = 32
     shadow_enabled: bool = True
@@ -43,10 +43,11 @@ class BackgroundConfig:
     shadow_offset_x: int = 0
     shadow_offset_y: int = 10
     shadow_color: str = "#000000"
-    frame_enabled: bool = False
+    frame_enabled: bool = True
     frame_width: int = 0
     frame_color: str = "#ffffff"
-    frame_radius: int = 0
+    frame_radius: int = 16
+    background_radius: int = 16
     gradient: BackgroundGradient = field(default_factory=BackgroundGradient)
     image: BackgroundImage = field(default_factory=BackgroundImage)
 

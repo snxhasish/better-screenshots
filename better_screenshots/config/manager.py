@@ -88,7 +88,7 @@ class ConfigManager:
             opacity=image_data.get("opacity", 1.0),
         )
         background = BackgroundConfig(
-            default_type=bg_data.get("default_type", "solid"),
+            default_type=bg_data.get("default_type", "gradient"),
             default_color=bg_data.get("default_color", "#1a1a2e"),
             padding=bg_data.get("padding", 32),
             shadow_enabled=bg_data.get("shadow_enabled", True),
@@ -96,10 +96,11 @@ class ConfigManager:
             shadow_offset_x=bg_data.get("shadow_offset_x", 0),
             shadow_offset_y=bg_data.get("shadow_offset_y", 10),
             shadow_color=bg_data.get("shadow_color", "#000000"),
-            frame_enabled=bg_data.get("frame_enabled", False),
+            frame_enabled=bg_data.get("frame_enabled", True),
             frame_width=bg_data.get("frame_width", 0),
             frame_color=bg_data.get("frame_color", "#ffffff"),
-            frame_radius=bg_data.get("frame_radius", 0),
+            frame_radius=bg_data.get("frame_radius", 16),
+            background_radius=bg_data.get("background_radius", 16),
             gradient=gradient,
             image=image,
         )
@@ -210,6 +211,7 @@ class ConfigManager:
                 "frame_width": config.background.frame_width,
                 "frame_color": config.background.frame_color,
                 "frame_radius": config.background.frame_radius,
+                "background_radius": config.background.background_radius,
                 "gradient": {
                     "enabled": config.background.gradient.enabled,
                     "start_color": config.background.gradient.start_color,

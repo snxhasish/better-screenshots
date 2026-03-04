@@ -24,8 +24,20 @@ class ImageProcessor:
         """Process screenshot with background and effects."""
         screenshot = Image.open(image_path).convert("RGBA")
 
-        target_width = preset.width if preset else screenshot.width + background.padding * 2
-        target_height = preset.height if preset else screenshot.height + background.padding * 2
+        if background.shadow_enabled:
+            screenshot_with_shadow = self._add_shadow(screenshot, background)
+        else:
+            screenshot_with_shadow = screenshot
+
+        shadow_offset_w = background.shadow_blur * 2 + abs(background.shadow_offset_x)
+        shadow_offset_h = background.shadow_blur * 2 + abs(background.shadow_offset_y)
+
+        if preset:
+            target_width = preset.width
+            target_height = preset.height
+        else:
+            target_width = screenshot_with_shadow.width + background.padding * 2
+            target_height = screenshot_with_shadow.height + background.padding * 2
 
         background_image = self._create_background(
             target_width,
@@ -36,6 +48,7 @@ class ImageProcessor:
 
         processed = self._composite_screenshot(
             background_image,
+            screenshot_with_shadow,
             screenshot,
             background,
             preset,
@@ -58,7 +71,7 @@ class ImageProcessor:
         bg_color = preset.background_color if preset else background.default_color
 
         if bg_type == "solid":
-            return self.bg_renderer.render_solid(width, height, bg_color)
+            bg = self.bg_renderer.render_solid(width, height, bg_color)
         elif bg_type == "gradient":
             if preset:
                 start = preset.gradient_start
@@ -67,9 +80,9 @@ class ImageProcessor:
                 start = background.gradient.start_color
                 end = background.gradient.end_color
             direction = background.gradient.direction
-            return self.bg_renderer.render_gradient(width, height, start, end, direction)
+            bg = self.bg_renderer.render_gradient(width, height, start, end, direction)
         elif bg_type == "image":
-            return self.bg_renderer.render_image(
+            bg = self.bg_renderer.render_image(
                 width,
                 height,
                 background.image.path,
@@ -77,11 +90,17 @@ class ImageProcessor:
                 background.image.opacity,
             )
         else:
-            return self.bg_renderer.render_solid(width, height, bg_color)
+            bg = self.bg_renderer.render_solid(width, height, bg_color)
+
+        if background.background_radius > 0:
+            bg = self._apply_rounded_corners(bg, background.background_radius)
+
+        return bg
 
     def _composite_screenshot(
         self,
         background: Image.Image,
+        screenshot_with_shadow: Image.Image,
         screenshot: Image.Image,
         background_config: BackgroundConfig,
         preset: Optional[Preset],
@@ -89,14 +108,16 @@ class ImageProcessor:
         """Composite screenshot onto background with shadow and padding."""
         padding = preset.padding if preset else background_config.padding
 
-        if background_config.shadow_enabled:
-            screenshot = self._add_shadow(screenshot, background_config)
+        bg_width = background.width
+        bg_height = background.height
+        img_width = screenshot_with_shadow.width
+        img_height = screenshot_with_shadow.height
 
-        paste_x = padding + background_config.shadow_offset_x
-        paste_y = padding + background_config.shadow_offset_y
+        paste_x = (bg_width - img_width) // 2
+        paste_y = (bg_height - img_height) // 2
 
         result = background.copy()
-        result.paste(screenshot, (paste_x, paste_y), screenshot)
+        result.paste(screenshot_with_shadow, (paste_x, paste_y), screenshot_with_shadow)
 
         return result
 
@@ -157,3 +178,19 @@ class ImageProcessor:
         result.paste(image, (frame_width, frame_width), image)
 
         return result
+
+    def _apply_rounded_corners(
+        self,
+        image: Image.Image,
+        radius: int,
+    ) -> Image.Image:
+        """Apply rounded corners to an image."""
+        mask = Image.new("L", image.size, 0)
+        mask_draw = ImageDraw.Draw(mask)
+        mask_draw.rounded_rectangle(
+            [(0, 0), (image.width - 1, image.height - 1)],
+            radius=radius,
+            fill=255,
+        )
+        image.putalpha(mask)
+        return image

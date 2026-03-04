@@ -1,5 +1,6 @@
 """Grim integration for Wayland screenshot capture."""
 
+import shutil
 import subprocess
 from pathlib import Path
 from typing import Optional
@@ -11,15 +12,7 @@ class GrimCapture:
     @staticmethod
     def is_available() -> bool:
         """Check if grim is available."""
-        try:
-            subprocess.run(
-                ["grim", "--version"],
-                capture_output=True,
-                check=True,
-            )
-            return True
-        except (subprocess.SubprocessError, FileNotFoundError):
-            return False
+        return shutil.which("grim") is not None
 
     def capture_fullscreen(
         self,
