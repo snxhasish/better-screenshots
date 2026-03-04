@@ -1,5 +1,9 @@
 # Better Screenshots
 
+<p align="center">
+  <img src="assets/banner.png" alt="Better Screenshots Banner">
+</p>
+
 A CLI-driven screenshot tool for Linux with background customization. Configurable via TOML/JSON/YAML files with hot-reload support. Optional cloud hosting for uploading screenshots and generating shareable links.
 
 **Philosophy**: Leverage existing tools (grim, slurp, scrot) for capture, focus on unique value (background customization, config-driven workflow).
@@ -53,6 +57,43 @@ xclip         # Clipboard (X11)
 ```bash
 pip install -r requirements.txt
 pip install -e .
+```
+
+### Install with Nix (Flake)
+
+```bash
+# Add to your flake.nix inputs:
+inputs.better-screenshots.url = "github:snxhasish/better-screenshots";
+
+# In your outputs:
+outputs = { self, nixpkgs, better-screenshots, ... }: {
+  nixosConfigurations.your-host = nixpkgs.lib.nixosSystem {
+    modules = [
+      better-screenshots.nixosModule
+      # or use the package directly:
+      # environment.systemPackages = [ better-screenshots.packages.${system}.default ];
+    ];
+  };
+};
+```
+
+### Install with Nix (Non-Flake)
+
+```nix
+# In your NixOS configuration.nix:
+nixpkgs.overlays = [ (import /path/to/better-screenshots/nix/overlay.nix) ];
+environment.systemPackages = [ pkgs.better-screenshots ];
+```
+
+### Install with Nix (Home Manager)
+
+```nix
+# In your home-manager configuration:
+programs.better-screenshots.enable = true;
+programs.better-screenshots.settings = {
+  capture.default_mode = "region";
+  background.default_type = "gradient";
+};
 ```
 
 ---
