@@ -4,7 +4,7 @@ set -e
 
 VERSION="0.1.0"
 INSTALL_DIR="${HOME}/.local/bin"
-REPO="snxhasish/better-screenshots"
+REPO="snhsish/better-screenshots"
 
 echo "Installing better-screenshots v${VERSION}..."
 
