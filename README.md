@@ -4,7 +4,12 @@
   <img src="assets/banner.png" alt="Better Screenshots Banner">
 </p>
 
-A CLI-driven screenshot tool for Linux with background customization. Configurable via TOML/JSON/YAML files with hot-reload support. Optional cloud hosting for uploading screenshots and generating shareable links.
+Screenshot tool with image and background customizations plus cloud uploads. 
+
+---
+
+- Configurable via TOML/JSON/YAML files with hot-reload support.
+- Optional cloud hosting for uploading screenshots and generating shareable links.
 
 **Philosophy**: Leverage existing tools (grim, slurp, scrot) for capture, focus on unique value (background customization, config-driven workflow).
 
@@ -52,59 +57,21 @@ wl-copy       # Clipboard (Wayland)
 xclip         # Clipboard (X11)
 ```
 
-### Install Python Package
+### Install via SSH (All Linux Distros)
 
 ```bash
-pip install -r requirements.txt
-pip install -e .
+curl -sSL https://raw.githubusercontent.com/snhsish/better-screenshots/main/install.sh | sh
 ```
 
-### Install with Nix (Flake)
+This script will:
+- Download the latest binary
+- Install to `~/.local/bin/better-screenshots`
+- Check for required dependencies (grim, slurp)
 
-```nix
-# Add to your flake.nix inputs:
-inputs.better-screenshots.url = "github:snxhasish/better-screenshots";
+---
 
-# In your outputs:
-outputs = { self, nixpkgs, better-screenshots, ... }: {
-  nixosConfigurations.your-host = nixpkgs.lib.nixosSystem {
-    modules = [
-      better-screenshots.nixosModule
-      # or use the package directly:
-      # environment.systemPackages = [ better-screenshots.packages.${system}.default ];
-    ];
-  };
-};
-```
-
-### Install with Nixpkgs (Official - after merged)
-
-```bash
-# Once merged into nixpkgs, install via:
-nix-env -iA nixpkgs.better-screenshots
-
-# Or in configuration.nix:
-environment.systemPackages = [ pkgs.better-screenshots ];
-```
-
-### Install with Nix (Non-Flake)
-
-```nix
-# In your NixOS configuration.nix:
-nixpkgs.overlays = [ (import /path/to/better-screenshots/nix/overlay.nix) ];
-environment.systemPackages = [ pkgs.better-screenshots ];
-```
-
-### Install with Nix (Home Manager)
-
-```nix
-# In your home-manager configuration:
-programs.better-screenshots.enable = true;
-programs.better-screenshots.settings = {
-  capture.default_mode = "region";
-  background.default_type = "gradient";
-};
-```
+### Nix Installation
+-  Coming soon.
 
 ---
 
