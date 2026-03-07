@@ -34,13 +34,6 @@ jobs:
 
   build-binary:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - platform: linux-x86_64
-            artifact_name: better-screenshots-linux-x86_64
-          - platform: linux-aarch64
-            artifact_name: better-screenshots-linux-aarch64
     steps:
       - uses: actions/checkout@v4
 
@@ -58,7 +51,7 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact_name }}
+          name: better-screenshots-binary
           path: dist/better-screenshots
           retention-days: 5
 
@@ -88,16 +81,17 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Download binaries
+      - name: Download binary
         uses: actions/download-artifact@v4
         with:
+          name: better-screenshots-binary
           path: dist
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            dist/*/better-screenshots
+            dist/better-screenshots
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
